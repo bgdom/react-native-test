@@ -1,9 +1,6 @@
-interface User{
-  email: string;
-  name: string;
-}
+import { UserData, UserRegister } from "../models/useSliceData";
 
-export async function saveUser(data: User) {
+export async function saveUser(data: UserRegister): Promise<UserData> {
   const result = await fetch('http://jsonplaceholder.typicode.com/users', {
     method: 'POST',
     headers: {

@@ -1,49 +1,50 @@
-import React, { useCallback, useState } from 'react';
-import { StackActions } from '@react-navigation/native';
-import { TextInput, View, SafeAreaView, Button, Text, StyleSheet, AsyncStorage } from "react-native";
+import React, { useCallback, useState, useEffect } from 'react';
+import { CommonActions, StackActions } from '@react-navigation/native';
+import { TextInput, View, Button, Text, StyleSheet } from "react-native";
 
-import { saveUser } from '../../service/api'
+import { useDispatch, useSelector } from 'react-redux';
+import { actions } from '../../store/user/userSlice';
+import { UserData } from '../../models/useSliceData';
+import { selectUserState } from '../../store/user/selector';
 
 export default function CreateAccountPage({ navigation }) {
+  const user: UserData = useSelector(selectUserState).data
+  
+  const dispatch = useDispatch()
+
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   
   const onRegister = useCallback(
-    async () => {
+     () => {
       if (!email.length || !name.length)
         return;
       
-      const user = {
-        name, email
-      }
-      console.log(user);
-      
-      try {
-        const result = await saveUser(user)
-
-        await AsyncStorage.setItem('user', JSON.stringify(result))
-        navigation.dispatch(
-          StackActions.replace('HomePage', {
-            result
-          }))
-      } catch (error) {
-        console.log(error)
-
-      }
+      dispatch(actions.registerUser({email, name}))
     },
-    [email, name, navigation],
+    [email, name, dispatch],
   )
+
+  // go to HomePage if user connected
+  useEffect(() => {
+    if (user) {
+      navigation.dispatch(CommonActions.reset({
+        index: 0,
+        routes: [
+          { name: 'HomePage' }
+        ],
+      }));
+    }
+  }, [user, navigation])
+
   return (
-    <SafeAreaView style={{flex: 1}}>
       <View style={{ flexDirection: 'column', flex: 1 }}>
-        <Text>Renseignez ces informations :</Text>
+        <Text style={styles.text} >Renseignez ces informations :</Text>
         <TextInput style={styles.input} onChangeText={setEmail} value={email}/>
         <TextInput style={styles.input} onChangeText={setName} value={name}/>
         <Button style={{alignContent: 'center'}}title="Create my account" onPress={onRegister} />
       </View>
-  
-    </SafeAreaView>
-  )
+    )
 }
 
 const styles = StyleSheet.create({
@@ -52,5 +53,9 @@ const styles = StyleSheet.create({
     margin: 12,
     borderWidth: 1,
     padding: 10,
+    color: 'black',
+  },
+  text: {
+    color: 'black',
   },
 });

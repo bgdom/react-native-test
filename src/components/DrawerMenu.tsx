@@ -1,18 +1,18 @@
 import React, { useCallback } from 'react';
-import { StyleSheet, View, Button, Text, AsyncStorage } from "react-native";
-import { StackActions } from '@react-navigation/native';
+import { View, Button } from "react-native";
+import { useDispatch } from 'react-redux';
+import { actions } from '../store/user/userSlice';
 
 export default function DrawerMenu({ navigation }) {
+  const dispatch = useDispatch()
 
   const logout = useCallback(() => {
-    AsyncStorage.removeItem('user').then(() => {
-      navigation.dispatch(StackActions.replace('LandingPage'))
-    })
+    dispatch(actions.disconnectUser())
   }, [navigation])
     
 
   return (
-    <View style={{backgroundColor: 'green', flex: 1}}>
+    <View style={{flex: 1}}>
       <Button title="Logout" onPress={logout}/>
     </View>
   )
