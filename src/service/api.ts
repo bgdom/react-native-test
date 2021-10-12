@@ -12,5 +12,5 @@ export async function saveUser(data: UserRegister): Promise<UserData> {
 
   if (result.status === 201)
     return await result.json()
-  return Promise.reject('save error');
+  return await Promise.reject('save error');
 }

@@ -12,7 +12,7 @@ export default function DrawerMenu({ navigation }) {
     
 
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1, backgroundColor: 'grey'}}>
       <Button title="Logout" onPress={logout}/>
     </View>
   )

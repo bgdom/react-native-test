@@ -11,7 +11,7 @@ import { actions } from './userSlice';
 function* handleRegisterUser(action: PayloadAction<UserRegister>) {
   const registerInfo = action.payload;
 
-  try {
+  try {    
     const result: UserData = yield call(saveUser, registerInfo)
     yield put(actions.userLoaded(result))
   } catch (error) {
